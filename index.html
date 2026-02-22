@@ -7,7 +7,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <script src="[https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&libraries=geometry](https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&libraries=geometry)"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&libraries=geometry"></script>
 
     <style>
         :root {
@@ -20,195 +20,60 @@
             --text-muted: #64748b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { height: 100vh; width: 100vw; overflow: hidden; background-color: var(--dark); }
+        #map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
 
-        body {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; /* Evita rolagem na tela cheia */
-            background-color: var(--dark);
-        }
-
-        /* Mapa em tela cheia */
-        #map {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        /* Painel Flutuante (Dashboard) */
         .dashboard-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            width: 380px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
+            position: absolute; top: 20px; left: 20px; z-index: 10; width: 380px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; max-height: calc(100vh - 40px); overflow-y: auto;
         }
 
-        /* Cabeçalho do Painel */
         .header {
-            background: var(--dark);
-            color: white;
-            padding: 20px;
-            border-radius: 16px 16px 0 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            background: var(--dark); color: white; padding: 20px; border-radius: 16px 16px 0 0;
+            display: flex; align-items: center; gap: 15px;
         }
 
-        .header img {
-            height: 40px;
-            background: white;
-            border-radius: 8px;
-            padding: 2px;
-        }
+        .header img { height: 40px; background: white; border-radius: 8px; padding: 2px; }
+        .header-titles h1 { font-size: 16px; font-weight: 700; margin: 0; }
+        .header-titles p { font-size: 12px; color: #94a3b8; margin: 0; }
 
-        .header-titles h1 {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0;
-        }
+        .panel-content { padding: 20px; }
 
-        .header-titles p {
-            font-size: 12px;
-            color: #94a3b8;
-            margin: 0;
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center; }
+        .stat-card.critical { grid-column: span 2; border-color: var(--danger); background: var(--danger-bg); }
+        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-value { font-size: 24px; font-weight: 700; color: var(--dark); margin-top: 5px; }
 
-        /* Conteúdo do Painel */
-        .panel-content {
-            padding: 20px;
+        .legenda-mapa {
+            background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 20px;
+            border: 1px solid #e2e8f0; font-size: 12px; color: var(--text-main);
         }
+        .legenda-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .circulo-legenda { width: 12px; height: 12px; border-radius: 50%; background: rgba(239, 68, 68, 0.4); border: 2px solid #ef4444; }
+        .pin-legenda { width: 12px; height: 12px; border-radius: 50%; background: #000; }
 
-        /* Grid de Estatísticas */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+        .controls-section h3 { font-size: 14px; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+        .instrucao { font-size: 13px; color: var(--text-muted); background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        .btn-limpar { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 15px;}
+        
+        .alert-box { display: none; margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 14px; line-height: 1.5; color: white; }
+        .status-badge { display: inline-block; padding: 4px 8px; background: white; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px; }
 
-        .stat-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-        }
+        #loading-geocoding { font-size: 12px; color: var(--primary); text-align: center; margin-top: 10px; font-weight: bold; }
 
-        .stat-card.critical {
-            grid-column: span 2;
-            border-color: var(--danger);
-            background: var(--danger-bg);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-top: 5px;
-        }
-
-        .stat-card.critical .stat-value {
-            color: var(--danger);
-        }
-
-        /* Controles de Rota */
-        .controls-section h3 {
-            font-size: 14px;
-            color: var(--text-main);
-            margin-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 5px;
-        }
-
-        .instrucao {
-            font-size: 13px;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .btn-limpar {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-limpar:hover {
-            background: var(--primary-hover);
-        }
-
-        /* Alerta Dinâmico */
-        .alert-box {
-            display: none; /* Escondido inicialmente */
+        /* Rodapé Acadêmico Personalizado */
+        .footer-creditos {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background: var(--danger);
-            color: white;
-            font-size: 14px;
-            line-height: 1.5;
-            animation: fadeIn 0.5s ease;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            background: white;
-            color: var(--danger);
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        /* Rodapé do painel */
-        .footer {
-            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
             text-align: center;
             font-size: 11px;
-            color: #94a3b8;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -234,36 +99,41 @@
                     <div class="stat-value">86</div>
                 </div>
                 <div class="stat-card critical">
-                    <div class="stat-label">Zonas Críticas Mapeadas</div>
-                    <div class="stat-value">12</div>
+                    <div class="stat-label">Sincronização Ativa</div>
+                    <div class="stat-value" id="contador">0</div>
+                    <div id="loading-geocoding">Processando dados oficiais...</div>
+                </div>
+            </div>
+
+            <div class="legenda-mapa">
+                <strong>Legenda do Mapa:</strong>
+                <div class="legenda-item" style="margin-top: 8px;">
+                    <div class="circulo-legenda"></div> Zonas Críticas de Sinistros
+                </div>
+                <div class="legenda-item">
+                    <div class="pin-legenda"></div> Registros de Óbitos
                 </div>
             </div>
 
             <div class="controls-section">
                 <h3>Planejamento de Rota Segura</h3>
+                <div class="instrucao" id="painel-instrucao">Aguarde a carga dos dados...</div>
                 
-                <div class="instrucao" id="painel-instrucao">
-                    <strong>Passo 1:</strong> Clique no mapa para definir o ponto de <b>Origem</b>.
-                </div>
-
                 <button class="btn-limpar" onclick="limparRota()">Nova Consulta de Rota</button>
 
-                <div id="alerta-perigo" class="alert-box">
-                    <div class="status-badge">ALERTA DE SEGURANÇA</div>
-                    <br>
-                    Sua rota passa por áreas com <b>alto índice de acidentes graves</b>. Considere buscar vias alternativas ou redobre a atenção.
+                <div id="alerta-perigo" class="alert-box" style="background: var(--danger);">
+                    <div class="status-badge" style="color: var(--danger);">ALERTA DE SEGURANÇA</div><br>
+                    Sua rota passa por áreas com <b>alto risco</b>. Considere buscar rotas alternativas ou redobre a atenção.
                 </div>
                 
-                <div id="alerta-seguro" class="alert-box" style="background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-                    <div class="status-badge" style="color: #10b981;">ROTA SEGURA</div>
-                    <br>
-                    Nenhuma zona crítica de sinistros detectada no seu trajeto principal.
+                <div id="alerta-seguro" class="alert-box" style="background: #10b981;">
+                    <div class="status-badge" style="color: #10b981;">ROTA SEGURA</div><br>
+                    Nenhuma zona crítica detectada no trajeto selecionado.
                 </div>
             </div>
 
-            <div class="footer">
-                Fonte de Dados: RP Mobi / Infosiga SP<br>
-                Projeto Acadêmico desenvolvido por Ana Bárbara Marques
+            <div class="footer-creditos">
+                O projeto utilizou os dados oficiais da RP Mobi e foi desenvolvido como projeto de extensão por <b>Ana Bárbara Marques dos Santos</b>.
             </div>
         </div>
     </div>
@@ -271,174 +141,180 @@
     <div id="map"></div>
 
     <script>
-        let map, infoWindow, directionsService, directionsRenderer;
-        let origem = null, destino = null;
-        let marcadorOrigem = null;
+        let map, infoWindow, directionsService, directionsRenderer, geocoder;
+        let origem = null, destino = null, marcadorOrigem = null;
+        let listaPontosVerificacao = []; 
+        let totalPontos = 0;
 
-        // Dados de Ribeirão Preto
-        const pontos = [
-            {nome:"Av. Francisco Junqueira x Jerônimo Gonçalves", lat:-21.1766, lng:-47.8083, risco:"66 sinistros", motivo:"Conversões irregulares e alta densidade"},
-            {nome:"Av. Independência x Nove de Julho", lat:-21.2017, lng:-47.8104, risco:"43 sinistros", motivo:"Velocidade e conflitos no semáforo"},
-            {nome:"Av. Presidente Vargas", lat:-21.2050, lng:-47.8120, risco:"42 sinistros", motivo:"Mudanças bruscas de faixa"},
-            {nome:"Av. João Fiúsa x Caramuru", lat:-21.2095, lng:-47.8100, risco:"36 sinistros", motivo:"Alta velocidade"},
-            {nome:"Av. Maurílio Biagi", lat:-21.1790, lng:-47.8200, risco:"35 sinistros", motivo:"Colisões traseiras"},
-            {nome:"Av. Dom Pedro I", lat:-21.1700, lng:-47.8300, risco:"26 sinistros", motivo:"Imprudência geral"},
-            {nome:"Av. Saudade", lat:-21.1800, lng:-47.8100, risco:"24 sinistros", motivo:"Interseções complexas"},
-            {nome:"Av. 13 de Maio", lat:-21.1850, lng:-47.8250, risco:"23 sinistros", motivo:"Distração e travessias"},
-            {nome:"Av. Presidente Kennedy", lat:-21.2200, lng:-47.8300, risco:"23 sinistros", motivo:"Velocidade incompatível"},
-            {nome:"Av. Marechal Costa e Silva", lat:-21.1900, lng:-47.8350, risco:"21 sinistros", motivo:"Ultrapassagens perigosas"},
-            {nome:"Av. Eduardo Andrea Matarazzo", lat:-21.1950, lng:-47.8450, risco:"21 sinistros", motivo:"Tráfego pesado"},
-            {nome:"Av. Jerônimo Gonçalves", lat:-21.1780, lng:-47.8080, risco:"19 sinistros", motivo:"Conflito pedestres/ônibus"}
+        const zonasDeRisco = [
+            {endereco: "Av. Dr. Francisco Junqueira x Jerônimo Gonçalves", risco: "66 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Independência x Nove de Julho", risco: "43 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Presidente Vargas x Nove de Julho", risco: "42 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Professor João Fiúsa x Av. Caramuru", risco: "36 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Maurílio Biagi x Leão XIII", risco: "35 sinistros", maiorCausa: "Colisão / Choque"},
+            {endereco: "Av. Dom Pedro I x Rua Bonfim", risco: "26 sinistros", maiorCausa: "Colisão / Atropelamento"},
+            {endereco: "Av. Saudade x Rua Monsenhor Siqueira", risco: "24 sinistros", maiorCausa: "Atropelamento"},
+            {endereco: "Av. 13 de Maio x Rua Itapura", risco: "23 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Presidente Kennedy x Novo Shopping", risco: "23 sinistros", maiorCausa: "Colisão / Atropelamento"},
+            {endereco: "Av. Marechal Costa e Silva x Praça Amin Calil", risco: "21 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Eduardo Andrea Matarazzo x Capitão Salomão", risco: "21 sinistros", maiorCausa: "Colisão / Atropelamento"},
+            {endereco: "Av. Caramuru x Rua Primo Tronco", risco: "18 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Nove de Julho x Independência", risco: "18 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Thomaz Alberto Whately x Av. Brasil", risco: "17 sinistros", maiorCausa: "Colisão"},
+            {endereco: "Av. Maria de Jesus Condeixa x Arnaldo Victaliano", risco: "17 sinistros", maiorCausa: "Colisão"}
         ];
 
-        // Estilo Premium Escuro para o Mapa
-        const mapStyle = [
-            {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
-            {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
-            {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
-            {featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{color: '#d59563'}]},
-            {featureType: 'road', elementType: 'geometry', stylers: [{color: '#38414e'}]},
-            {featureType: 'road', elementType: 'geometry.stroke', stylers: [{color: '#212a37'}]},
-            {featureType: 'road', elementType: 'labels.text.fill', stylers: [{color: '#9ca5b3'}]},
-            {featureType: 'road.highway', elementType: 'geometry', stylers: [{color: '#746855'}]},
-            {featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{color: '#1f2835'}]},
-            {featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{color: '#f3d19c'}]},
-            {featureType: 'transit', elementType: 'geometry', stylers: [{color: '#2f3948'}]},
-            {featureType: 'water', elementType: 'geometry', stylers: [{color: '#17263c'}]},
-            {featureType: 'water', elementType: 'labels.text.fill', stylers: [{color: '#515c6d'}]},
-            {featureType: 'water', elementType: 'labels.text.stroke', stylers: [{color: '#17263c'}]}
+        const obitos = [
+            {endereco: "Av. Thomaz Alberto Whately, 1901", motivo: "Alta velocidade e fluxo de veículos pesados"},
+            {endereco: "Av. Brasil x Av. Thomaz Alberto Whately", motivo: "Conflitos de conversão e travessia"},
+            {endereco: "Av. Presidente Kennedy, 400", motivo: "Atropelamentos e colisões traseiras"},
+            {endereco: "Av. Marechal Costa e Silva, 4174", motivo: "Excesso de velocidade"},
+            {endereco: "Av. Dom Pedro I, 295", motivo: "Conflitos em cruzamentos e travessia"},
+            {endereco: "Av. Saudade, 1380", motivo: "Travessias irregulares e fluxo intenso"},
+            {endereco: "Av. Independência, Pça Salvador Spadoni", motivo: "Conversões perigosas e velocidade"},
+            {endereco: "Av. Jerônimo Gonçalves, 100", motivo: "Alta interação pedestres x veículos"},
+            {endereco: "Av. Maurílio Biagi, 1870", motivo: "Choque em obstáculo fixo - alta velocidade"},
+            {endereco: "Rua Bernardino de Campos, 644", motivo: "Atropelamento em travessia central"},
+            {endereco: "Av. Treze de Maio, 353", motivo: "Colisão lateral envolvendo motocicleta"},
+            {endereco: "Rua Capitão Salomão, 250", motivo: "Atropelamento por distração de condutor"},
+            {endereco: "Av. Eduardo Andrea Matarazzo, 4015", motivo: "Atropelamento em via de trânsito rápido"},
+            {endereco: "Rua Nilo Peçanha, 65", motivo: "Atropelamento por falta de visibilidade"}
         ];
 
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 13,
-                center: { lat: -21.1775, lng: -47.8103 },
-                styles: mapStyle,
-                disableDefaultUI: true, // Remove controles poluentes
-                zoomControl: true, // Mantém apenas o zoom
-                zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM }
+                zoom: 13, center: { lat: -21.1840, lng: -47.8050 },
+                styles: [{elementType: 'geometry', stylers: [{color: '#242f3e'}]}, {featureType: 'road', elementType: 'geometry', stylers: [{color: '#38414e'}]}],
+                disableDefaultUI: true, zoomControl: true
             });
 
             directionsService = new google.maps.DirectionsService();
-            
-            // Estilizando a linha da rota para combinar com o layout escuro
-            directionsRenderer = new google.maps.DirectionsRenderer({ 
-                map: map,
-                polylineOptions: { strokeColor: '#3b82f6', strokeWeight: 6, strokeOpacity: 0.8 }
-            });
-            
+            directionsRenderer = new google.maps.DirectionsRenderer({ map: map, polylineOptions: { strokeColor: '#3b82f6', strokeWeight: 6, strokeOpacity: 0.8 }});
             infoWindow = new google.maps.InfoWindow();
+            geocoder = new google.maps.Geocoder();
 
-            carregarZonasDeRisco();
-            configurarInteracaoDeRota();
+            carregarDados();
         }
 
-        function carregarZonasDeRisco() {
-            pontos.forEach(p => {
-                // Desenha o círculo de risco (Mancha de Calor)
-                const riskCircle = new google.maps.Circle({
-                    strokeColor: "#ef4444",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#ef4444",
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: {lat: p.lat, lng: p.lng},
-                    radius: 200 // Raio de 200 metros
+        const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+        async function carregarDados() {
+            const cidadeStr = ", Ribeirão Preto, SP, Brasil";
+
+            for (let p of zonasDeRisco) {
+                await delay(380); 
+                geocoder.geocode({ address: p.endereco + cidadeStr }, (res, status) => {
+                    if (status === "OK") {
+                        const loc = res[0].geometry.location;
+                        listaPontosVerificacao.push(loc);
+                        criarZona(loc, p);
+                        contabilizar();
+                    }
                 });
+            }
 
-                // Tooltip bonita ao clicar no círculo
-                riskCircle.addListener("click", (e) => {
-                    const content = `
-                        <div style="color: #0f172a; font-family: 'Inter', sans-serif; min-width: 200px;">
-                            <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #ef4444;">Ponto Crítico</h3>
-                            <p style="margin: 0 0 8px 0; font-weight: bold; font-size: 13px;">${p.nome}</p>
-                            <p style="margin: 0; font-size: 12px;"><b>Registro:</b> ${p.risco}</p>
-                            <p style="margin: 0; font-size: 12px;"><b>Causa Principal:</b> ${p.motivo}</p>
-                        </div>
-                    `;
-                    infoWindow.setContent(content);
-                    infoWindow.setPosition(e.latLng);
-                    infoWindow.open(map);
+            for (let o of obitos) {
+                await delay(380); 
+                geocoder.geocode({ address: o.endereco + cidadeStr }, (res, status) => {
+                    if (status === "OK") {
+                        const loc = res[0].geometry.location;
+                        listaPontosVerificacao.push(loc);
+                        criarMarcadorObito(loc, o);
+                        contabilizar();
+                    }
                 });
-            });
-        }
-
-        function configurarInteracaoDeRota() {
-            const instrucao = document.getElementById("painel-instrucao");
-
-            map.addListener("click", (e) => {
-                // Esconde alertas ao clicar novamente
-                document.getElementById("alerta-perigo").style.display = "none";
-                document.getElementById("alerta-seguro").style.display = "none";
-
-                if (!origem) {
-                    origem = e.latLng;
-                    marcadorOrigem = new google.maps.Marker({ position: origem, map: map, title: "Origem" });
-                    instrucao.innerHTML = "<strong>Passo 2:</strong> Agora clique no mapa para definir o <b>Destino</b>.";
-                } else if (!destino) {
-                    destino = e.latLng;
-                    instrucao.innerHTML = "<strong>Processando:</strong> Calculando rota e analisando riscos...";
-                    calcularRota();
-                }
-            });
-        }
-
-        function calcularRota() {
-            directionsService.route({
-                origin: origem,
-                destination: destino,
-                travelMode: 'DRIVING'
-            }, (result, status) => {
-                const instrucao = document.getElementById("painel-instrucao");
-                
-                if (status === "OK") {
-                    // Limpa o marcador manual pois o renderer já cria os de A e B
-                    if (marcadorOrigem) marcadorOrigem.setMap(null); 
-                    
-                    directionsRenderer.setDirections(result);
-                    instrucao.innerHTML = "<strong>Concluído:</strong> Rota traçada. Verifique o alerta de segurança abaixo.";
-                    
-                    verificarRiscoNaRota(result.routes[0].overview_path);
-                } else {
-                    instrucao.innerHTML = "<span style='color: red;'>Não foi possível traçar a rota. Tente pontos diferentes.</span>";
-                    origem = null; destino = null;
-                }
-            });
-        }
-
-        function verificarRiscoNaRota(path) {
-            let encontrouPerigo = false;
-            
-            pontos.forEach(p => {
-                const pPos = new google.maps.LatLng(p.lat, p.lng);
-                path.forEach(coord => {
-                    // Checa se a rota passa a menos de 250 metros do centro do ponto crítico
-                    const dist = google.maps.geometry.spherical.computeDistanceBetween(coord, pPos);
-                    if (dist < 250) encontrouPerigo = true;
-                });
-            });
-
-            if (encontrouPerigo) {
-                document.getElementById("alerta-perigo").style.display = "block";
-            } else {
-                document.getElementById("alerta-seguro").style.display = "block";
             }
         }
 
+        function contabilizar() {
+            totalPontos++;
+            document.getElementById("contador").innerText = totalPontos;
+            if (totalPontos >= (zonasDeRisco.length + obitos.length)) {
+                document.getElementById("loading-geocoding").innerText = "Sincronização Finalizada";
+                document.getElementById("painel-instrucao").innerHTML = "Clique no mapa para definir a <b>Origem</b>.";
+                habilitarMapa();
+            }
+        }
+
+        function criarZona(pos, p) {
+            const circle = new google.maps.Circle({
+                strokeColor: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.35,
+                map: map, center: pos, radius: 260
+            });
+            circle.addListener("click", () => {
+                infoWindow.setContent(`
+                    <div style="color: #0f172a; font-family: 'Inter', sans-serif;">
+                      <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #ef4444;">ZONA CRÍTICA</h3>
+                      <p style="margin: 0 0 8px 0; font-weight: bold; font-size: 13px;">${p.endereco}</p>
+                      <p style="margin: 0; font-size: 12px;"><b>Fator de Risco:</b> ${p.risco}</p>
+                      <p style="margin: 0; font-size: 12px;"><b>Maior Causa:</b> ${p.maiorCausa}</p>
+                    </div>
+                `);
+                infoWindow.setPosition(pos); infoWindow.open(map);
+            });
+        }
+
+        function criarMarcadorObito(pos, o) {
+            const marker = new google.maps.Marker({
+                position: pos, map: map,
+                icon: { path: google.maps.SymbolPath.CIRCLE, scale: 7, fillColor: "#000", fillOpacity: 1, strokeColor: "#fff", strokeWeight: 2 }
+            });
+            marker.addListener("click", () => {
+                infoWindow.setContent(`
+                    <div style="color: #0f172a; font-family: 'Inter', sans-serif;">
+                      <h3 style="margin: 0 0 5px 0; font-size: 14px; color: #000;">⚠️ REGISTRO FATAL</h3>
+                      <p style="margin: 0 0 8px 0; font-weight: bold; font-size: 13px;">${o.endereco}</p>
+                      <p style="margin: 0; font-size: 12px;"><b>Motivo:</b> ${o.motivo}</p>
+                    </div>
+                `);
+                infoWindow.open(map, marker);
+            });
+        }
+
+        function habilitarMapa() {
+            map.addListener("click", (e) => {
+                if (!origem) {
+                    origem = e.latLng;
+                    marcadorOrigem = new google.maps.Marker({ position: origem, map: map, label: "A" });
+                    document.getElementById("painel-instrucao").innerHTML = "Agora selecione o <b>Destino</b>.";
+                } else if (!destino) {
+                    destino = e.latLng;
+                    processarRota();
+                }
+            });
+        }
+
+        function processarRota() {
+            directionsService.route({ origin: origem, destination: destino, travelMode: 'DRIVING' }, (res, status) => {
+                if (status === "OK") {
+                    if (marcadorOrigem) marcadorOrigem.setMap(null);
+                    directionsRenderer.setDirections(res);
+                    verificarSeguranca(res.routes[0].overview_path);
+                }
+            });
+        }
+
+        function verificarSeguranca(path) {
+            let risco = false;
+            listaPontosVerificacao.forEach(pPos => {
+                path.forEach(coord => {
+                    if (google.maps.geometry.spherical.computeDistanceBetween(coord, pPos) < 280) risco = true;
+                });
+            });
+            document.getElementById("alerta-perigo").style.display = risco ? "block" : "none";
+            document.getElementById("alerta-seguro").style.display = risco ? "none" : "block";
+            document.getElementById("painel-instrucao").innerText = "Trajeto finalizado.";
+        }
+
         function limparRota() {
-            origem = null;
-            destino = null;
-            if (marcadorOrigem) marcadorOrigem.setMap(null);
+            origem = null; destino = null; if (marcadorOrigem) marcadorOrigem.setMap(null);
             directionsRenderer.setDirections({ routes: [] });
-            
             document.getElementById("alerta-perigo").style.display = "none";
             document.getElementById("alerta-seguro").style.display = "none";
-            document.getElementById("painel-instrucao").innerHTML = "<strong>Passo 1:</strong> Clique no mapa para definir o ponto de <b>Origem</b>.";
+            document.getElementById("painel-instrucao").innerHTML = "Clique no mapa para definir a <b>Origem</b>.";
         }
 
         window.onload = initMap;
     </script>
 </body>
-
 </html>
