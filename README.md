@@ -38,3 +38,4 @@ HTML
 
 👩‍💻 Autora
 Desenvolvido por Ana Bárbara como parte do aprimoramento contínuo em desenvolvimento de software e soluções para cidades inteligentes.
+
